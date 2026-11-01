@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="theme-color" content="#1e40af"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TELOS Archive Viewer</title>
+<style>
+:root{--b:#1e40af;--g:#64748b;--l:#e2e8f0}*{box-sizing:border-box}body{margin:0;font:14px system-ui,Segoe UI,Arial;color:#0f172a;background:#f8fafc}
+header{background:var(--b);color:#fff;padding:12px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}header h1{font-size:17px;margin:0;flex:1}
+button,select,input,label.btn{font:inherit;padding:7px 12px;border-radius:8px;border:1px solid var(--l);background:#fff;cursor:pointer}button.p,label.btn.p{background:var(--b);color:#fff;border-color:var(--b)}
+nav{display:flex;gap:4px;padding:10px 20px 0;flex-wrap:wrap}nav button{border-radius:8px 8px 0 0;border-bottom:0}nav button.on{background:var(--b);color:#fff}
+main{padding:16px 20px}.card{background:#fff;border:1px solid var(--l);border-radius:12px;padding:14px;margin-bottom:12px}
+table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--l)}th{background:#f1f5f9;font-size:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.ok{color:#16a34a}.bad{color:#dc2626}.mut{color:var(--g)}
+#drop{border:2px dashed #94a3b8;border-radius:14px;padding:50px;text-align:center;background:#fff}
+@page{size:A4 portrait;margin:8mm}
+.sheet{width:194mm;height:281mm;margin:0 auto 14px;background:#fff;border:1.5px solid #1e3a8a;padding:6mm 7mm;display:flex;flex-direction:column;font:11pt/1.25 Arial,Helvetica,sans-serif;color:#000;overflow:hidden;box-sizing:border-box;break-after:page;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sheet:last-child{break-after:auto}.sheet table{width:100%;border-collapse:collapse}.sheet th,.sheet td{border:1px solid #334155;padding:.28em .5em;text-align:left;vertical-align:middle}
+.hd{display:flex;align-items:center;justify-content:center;gap:4mm;border-bottom:2.5px solid #1e3a8a;padding-bottom:2.5mm}.hd img{height:17mm;width:auto}.hd .t{text-align:center}
+.sn{font-size:1.7em;font-weight:800;color:#1e3a8a;text-transform:uppercase;letter-spacing:.03em}.sa{font-size:.82em;color:#334155}
+.tt{margin:3mm 0;background:#1e3a8a;color:#fff;text-align:center;font-weight:700;letter-spacing:.12em;padding:.35em;font-size:1.05em}
+.info td.k{background:#e8eefc;font-weight:700;width:19%}.info td.v{width:31%}
+.sheet .sub{margin-top:3mm}.sub th{background:#1e3a8a;color:#fff;text-align:center;font-size:.9em}.sub td.c{text-align:center}.sub tr:nth-child(even) td{background:#f4f7fd}
+.sum{margin-top:3mm}.sum td.k{background:#e8eefc;font-weight:700;width:22%}.sum td.v{width:28%}
+.rm{margin-top:3mm;border:1px solid #334155}.rm div{padding:.3em .5em;min-height:2.6em}.rm b{color:#1e3a8a}.rm div+div{border-top:1px solid #334155}
+.sbody{flex:1;min-height:0}.ft{display:flex;gap:8mm;justify-content:space-between;align-items:flex-end;border-top:1.5px solid #1e3a8a;padding-top:2.5mm;font-size:.9em}.ft>div{flex:1;text-align:center}
+.ft .ln{border-bottom:1px solid #000;height:11mm;display:flex;align-items:flex-end;justify-content:center}.ft img{max-height:10mm}.ft small{color:#475569}.ar{text-align:center;font-size:.65em;color:#64748b;margin-top:1.5mm}
+@media print{header,nav,.row,.noprint,#drop{display:none!important}body{background:#fff}main{padding:0}#cv{display:block!important}#rcv{display:block}.sheet{margin:0;border-width:1.5px}}
+</style></head><body>
+<header><h1>TELOS Archive Viewer <span class="mut" style="color:#bfdbfe;font-weight:400">(works offline, read-only)</span></h1>
+<label class="btn p">Open backup ZIP<input id="f" type="file" accept=".zip" hidden></label><button id="inst" class="p" style="display:none;background:#fff;color:#1e40af">Install app</button><span id="info"></span></header>
+<nav id="nav"></nav><main id="m"><div id="drop">Click <b>Open backup ZIP</b> (or drop a TELOS backup file here).<br><span class="mut">Nothing is uploaded anywhere. The backup is read on this computer only.</span><br><br><span class="mut">First time? Click <b>Install app</b> (top right) or the install icon in the address bar of Chrome or Edge. After that it opens from your desktop and works without internet.</span></div></main>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let Z=null,T={},MF=null,SS={},tab='cards',sel=null;
+// ---- minimal ZIP reader (reads from disk on demand, no libraries) ----
+async function openZip(file){
+  const n=Math.min(file.size,70000),tail=new DataView(await file.slice(file.size-n).arrayBuffer());let e=-1;
+  for(let i=n-22;i>=0;i--)if(tail.getUint32(i,true)===0x06054b50){e=i;break}
+  if(e<0)throw new Error('This is not a valid ZIP file.');
+  const cnt=tail.getUint16(e+10,true),size=tail.getUint32(e+12,true),off=tail.getUint32(e+16,true);
+  if(off===0xFFFFFFFF)throw new Error('Backup is larger than 4 GB (not supported by this viewer).');
+  const cd=new DataView(await file.slice(off,off+size).arrayBuffer()),ent={};let p=0;
+  for(let i=0;i<cnt;i++){const nl=cd.getUint16(p+28,true),el=cd.getUint16(p+30,true),cl=cd.getUint16(p+32,true);
+    const name=new TextDecoder().decode(new Uint8Array(cd.buffer,p+46,nl));
+    ent[name]={m:cd.getUint16(p+10,true),cs:cd.getUint32(p+20,true),lo:cd.getUint32(p+42,true)};p+=46+nl+el+cl}
+  return{file,ent}
+}
+async function read(name){
+  const x=Z.ent[name];if(!x)throw new Error('Missing '+name);
+  const h=new DataView(await Z.file.slice(x.lo,x.lo+30).arrayBuffer()),s=x.lo+30+h.getUint16(26,true)+h.getUint16(28,true);
+  const raw=Z.file.slice(s,s+x.cs);
+  if(x.m===0)return new Uint8Array(await raw.arrayBuffer());
+  return new Uint8Array(await new Response(raw.stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+}
+const sha=async u=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',u))].map(b=>b.toString(16).padStart(2,'0')).join('');
+const J=u=>JSON.parse(new TextDecoder().decode(u));
+async function load(file){
+  try{$('info').textContent='Reading…';Z=await openZip(file);MF=J(await read('manifest.json'));
+    if(MF.format!=='telos-backup')throw new Error('Not a TELOS backup.');
+    T={};for(const[t,i]of Object.entries(MF.tables)){T[t]=[];for(const p of i.parts)T[t].push(...J(await read(p.name)))}
+    const s=(T.system_settings||[])[0];SS=(s&&s.data)||{};
+    $('info').textContent=file.name+' · made '+new Date(MF.created).toLocaleString();tab='cards';sel=null;draw()
+  }catch(e){$('info').textContent='';alert('Could not open: '+e.message)}
+}
+$('f').onchange=e=>e.target.files[0]&&load(e.target.files[0]);
+addEventListener('dragover',e=>e.preventDefault());addEventListener('drop',e=>{e.preventDefault();e.dataTransfer.files[0]&&load(e.dataTransfer.files[0])});
+const D=t=>(T[t]||[]).map(r=>r.data||r);
+function draw(){
+  const tabs=[['cards','Report Cards'],['students','Students'],['staff','Staff'],['files','Uploaded Files'],['check','Integrity & Info']];
+  $('nav').innerHTML=tabs.map(([k,l])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';sel=null;draw()">${l}</button>`).join('');
+  ({cards,students:()=>list('students',['id','name','class','gender','status']),staff:()=>list('staff',['id','name','role','email','phone']),files,check})[tab]()
+}
+function csv(rows,cols,name){
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"',b=new Blob(['\ufeff'+[cols.map(q).join(',')].concat(rows.map(r=>cols.map(c=>q(r[c])).join(','))).join('\r\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.csv';a.click()
+}
+function list(t,cols){
+  const rows=D(t),q=(sel&&sel.q)||'',f=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q.toLowerCase()));
+  window._rows=f;window._cols=cols;
+  $('m').innerHTML=`<div class="row"><input placeholder="Search…" value="${esc(q)}" oninput="sel={q:this.value};list('${t}',window._cols)"><button onclick="csv(window._rows,window._cols,'${t}')">Download as CSV (Excel)</button><span class="mut">${f.length} of ${rows.length}</span></div>
+  <div class="card" style="overflow:auto"><table><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr>${f.slice(0,500).map(r=>`<tr>${cols.map(c=>`<td>${esc(r[c])}</td>`).join('')}</tr>`).join('')}</table>${f.length>500?'<p class="mut">Showing first 500. Use search or CSV for all.</p>':''}</div>`;
+  const i=$('m').querySelector('input');i.focus();i.setSelectionRange(99,99)
+}
+function cards(){
+  const H=D('academic_history');if(!H.length){$('m').innerHTML='<div class="card">No archived report cards in this backup.</div>';return}
+  const u=a=>[...new Set(a)].sort(),s=sel||{},yrs=u(H.map(r=>r.academicYear));
+  s.y=s.y||yrs[yrs.length-1];const trm=u(H.filter(r=>r.academicYear===s.y).map(r=>r.term));s.t=trm.includes(s.t)?s.t:trm[0];
+  const cls=u(H.filter(r=>r.academicYear===s.y&&r.term===s.t).map(r=>r.studentClass));s.c=cls.includes(s.c)?s.c:cls[0];sel=s;
+  const L=H.filter(r=>r.academicYear===s.y&&r.term===s.t&&r.studentClass===s.c).sort((a,b)=>a.studentName.localeCompare(b.studentName)),cur=L.find(r=>r.id===s.id);
+  const o=(a,v)=>a.map(x=>`<option ${x===v?'selected':''}>${esc(x)}</option>`).join('');
+  $('m').innerHTML=`<div class="row"><select onchange="sel={y:this.value};draw()">${o(yrs,s.y)}</select><select onchange="sel.t=this.value;sel.c=null;sel.id=null;draw()">${o(trm,s.t)}</select><select onchange="sel.c=this.value;sel.id=null;draw()">${o(cls,s.c)}</select>
+  <button class="p" onclick="fit();window.print()">Print / Save as PDF</button><button onclick="printAll()">Print whole class (${L.length})</button><button onclick="csv(L2(),['studentName','studentClass','academicYear','term','total'],'report_cards_${esc(s.c)}')">Class list CSV</button></div>
+  <div id="cv" style="display:grid;grid-template-columns:230px 1fr;gap:14px"><div class="card noprint" style="max-height:75vh;overflow:auto">${L.map(r=>`<div><a href="#" onclick="sel.id='${r.id}';draw();return false" style="${r.id===s.id?'font-weight:700':''}">${esc(r.studentName)}</a></div>`).join('')}</div>
+  <div id="rcv">${cur?rc(cur):'<div class="card">Select a student.</div>'}</div></div>`;
+  window.L2=()=>L.map(r=>({...r,total:tot(r)}));fit()
+}
+const tot=r=>(r.subjects||[]).reduce((n,x)=>n+(+x.total||0),0).toFixed(1);
+function ord(n){n=+n;const v=n%100,s=['th','st','nd','rd'];return n+(s[(v-20)%10]||s[v]||s[0])}
+function rc(r){
+  const a=r.attendance||{},logo=[SS.schoolLogo,SS.logo,SS.logoUrl].find(x=>String(x||'').startsWith('data:image')),sig=String(r.headSignatureUrl||'').startsWith('data:image'),
+  addr=[SS.schoolAddress||SS.address,SS.schoolPhone||SS.phone].filter(Boolean).join('  |  '),k=(l,v)=>`<td class="k">${l}</td><td class="v">${esc(v)}</td>`;
+  return`<div class="sheet"><div class="hd">${logo?`<img src="${logo}">`:''}<div class="t"><div class="sn">${esc(SS.schoolName||'School')}</div>${addr?`<div class="sa">${esc(addr)}</div>`:''}</div></div>
+  <div class="tt">TERMINAL REPORT &nbsp;·&nbsp; ${esc(String(r.term).toUpperCase())} &nbsp;·&nbsp; ${esc(r.academicYear)}</div>
+  <table class="info"><tr>${k('Name',r.studentName)}${k('Class',r.studentClass)}</tr><tr>${k('Student ID',r.studentId)}${k('Class size',r.classSize)}</tr></table>
+  <div class="sbody"><table class="sub"><tr><th style="text-align:left">Subject</th><th>Class Score<br>(50)</th><th>Exam Score<br>(50)</th><th>Total<br>(100)</th><th>Grade</th><th>Position</th><th style="text-align:left">Remark</th></tr>
+  ${(r.subjects||[]).map(x=>`<tr><td>${esc(x.name)}</td><td class="c">${esc(x.classScore)}</td><td class="c">${esc(x.examScore)}</td><td class="c"><b>${esc(x.total)}</b></td><td class="c"><b>${esc(x.grade)}</b></td><td class="c">${x.position?ord(x.position):''}</td><td>${esc(x.remark)}</td></tr>`).join('')}</table>
+  <table class="sum"><tr>${k('Total Score',tot(r))}${k('Class Position',r.rankingEnabled&&r.overallPosition?ord(r.overallPosition)+' of '+r.classSize:'-')}</tr>
+  <tr>${k('Attendance',(a.present??'')+' of '+(a.opened??'')+' days')}${k('Days Absent',a.absent)}</tr><tr>${k('Conduct',r.conduct)}${k('Interest',r.interest)}</tr>
+  <tr>${k('Vacation Date',r.vacationDate)}${k('Next Term Begins',r.nextTermBegins)}</tr>${r.promotedTo?`<tr>${k('Promoted To',r.promotedTo)}<td colspan="2"></td></tr>`:''}</table>
+  <div class="rm"><div><b>Class Teacher's Remarks:</b> ${esc(r.classTeacherRemark)}</div><div><b>Head Teacher's Comments:</b> ${esc(r.headRemark)}</div></div></div>
+  <div class="ft"><div><div class="ln"></div><small>Class Teacher's Signature</small></div><div><div class="ln">${sig?`<img src="${r.headSignatureUrl}">`:''}</div><small>Head Teacher's Signature ${esc(r.headSignatureDate||'')}</small></div></div>
+  <div class="ar">Archived copy${r.archivedAt?' · '+esc(r.archivedAt):''}</div></div>`
+}
+// Shrinks the text of each sheet just enough that it always stays on ONE A4 page.
+function fit(){document.querySelectorAll('.sheet').forEach(el=>{let f=11;el.style.fontSize=f+'pt';while(el.scrollHeight>el.clientHeight+1&&f>5.5){f-=.25;el.style.fontSize=f+'pt'}})}
+function printAll(){const r=window.L2();const H=D('academic_history');$('rcv').innerHTML=r.map(x=>rc(H.find(h=>h.id===x.id))).join('');fit();window.print();draw()}
+function files(){
+  const meta={};D('submitted_documents').forEach(d=>meta[d.id]=d);
+  $('m').innerHTML=`<div class="card"><table><tr><th>File</th><th>Details</th><th>Size</th><th></th></tr>${MF.files.map((f,i)=>{const d=meta[f.name]||{};return`<tr><td>${esc(d.title||d.fileName||d.name||f.name)}</td><td>${esc([d.class,d.uploadedBy,d.date].filter(Boolean).join(' · '))}</td><td>${(f.size/1024).toFixed(0)} KB</td><td><button onclick="dl(${i})">Download</button></td></tr>`}).join('')||'<tr><td>No uploaded files in this backup.</td></tr>'}</table></div>`
+}
+async function dl(i){const f=MF.files[i],d=D('submitted_documents').find(x=>x.id===f.name)||{},u=await read('files/'+f.name),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([u]));a.download=d.fileName||d.name||f.name;a.click()}
+function check(){
+  $('m').innerHTML=`<div class="card"><p><b>Backup made:</b> ${new Date(MF.created).toLocaleString()}</p><table><tr><th>Table</th><th>Records</th></tr>${Object.entries(MF.tables).map(([t,i])=>`<tr><td>${t}</td><td>${i.rows}</td></tr>`).join('')}</table><p>${MF.files.length} uploaded files</p>
+  <button class="p" onclick="verify()">Check backup is not damaged</button><div id="vr" style="margin-top:8px"></div></div>`
+}
+async function verify(){
+  const vr=$('vr');let bad=[],n=0;const all=[...Object.values(MF.tables).flatMap(i=>i.parts.map(p=>[p.name,p.sha256])),...MF.files.map(f=>['files/'+f.name,f.sha256])];
+  for(const[nm,h]of all){vr.textContent=`Checking ${++n} of ${all.length}…`;try{if(await sha(await read(nm))!==h)bad.push(nm)}catch(e){bad.push(nm)}}
+  vr.innerHTML=bad.length?`<span class="bad">Damaged or missing: ${bad.slice(0,5).map(esc).join(', ')}</span>`:`<span class="ok">All ${all.length} items match their checksums. This backup is good.</span>`
+}
+
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;$('inst').style.display=''});
+$('inst').onclick=async()=>{if(dip){dip.prompt();await dip.userChoice;dip=null;$('inst').style.display='none'}};
+addEventListener('appinstalled',()=>{$('inst').style.display='none'});
+</script></body></html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TELOS Archive Viewer | MaceInk Technologies</title><meta name="theme-color" content="#4f46e5">
+<link rel="icon" type="image/png" href="icon-192.png"><link rel="manifest" href="manifest.webmanifest">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{brand:{50:'#f4f3ff',100:'#ebe9fe',500:'#6366f1',600:'#4f46e5',700:'#4338ca',900:'#1e1b4b'}}}}}</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:#f8fafc}</style></head><body>
+  <div id="site" class="flex flex-col min-h-screen">
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-slate-100">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-brand-500/20">
+            <img src="data:image/png;base64,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" alt="TELOS Logo" class="w-full h-full object-cover rounded-xl">
+          </div>
+          <div>
+            <span class="text-xl font-black text-brand-900 tracking-tight">TELOS</span>
+            <span class="block text-[10px] text-brand-600 font-bold uppercase tracking-widest">School Assessment & Reporting System</span>
+          </div>
+        </div>
+        <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
+          <a href="#about" class="hover:text-brand-600 transition-colors">About TELOS</a>
+          <a href="#story" class="hover:text-brand-600 transition-colors">Our Story</a>
+          <a href="#MaceInk" class="hover:text-brand-600 transition-colors">MaceInk Technologies</a>
+          <a href="#products" class="hover:text-brand-600 transition-colors">Products</a>
+          <a href="#why-telos" class="hover:text-brand-600 transition-colors">Why TELOS</a>
+          <a href="#contact" class="hover:text-brand-600 transition-colors">Contact</a>
+        </nav>
+        <div>
+          <button onclick="installViewer()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md shadow-brand-600/20 transition-all cursor-pointer">
+            Install Archive Viewer
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- SECTION 1: HERO AREA -->
+    <section class="relative overflow-hidden py-20 lg:py-32 bg-gradient-to-b from-brand-50/50 to-slate-50">
+      <div class="max-w-5xl mx-auto px-6 text-center space-y-8">
+        <div class="inline-flex items-center space-x-2 bg-brand-100/80 text-brand-700 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase">
+          <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+          <span>Tailored for Ghanaian Educational Institutions</span>
+        </div>
+        
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-900 tracking-tight leading-tight">
+          Empowering Schools Through <span class="text-brand-600">Smart Digital Management</span>
+        </h1>
+        
+        <p class="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+          TELOS is a modern School Assessment & Reporting System designed to simplify academic administration, improve efficiency, and help schools in Ghana manage their daily operations with confidence and simplicity.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+          <button onclick="installViewer()" class="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-base shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center space-x-2 cursor-pointer">
+            <span>Install Archive Viewer</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </button>
+          <a href="#maceink" class="w-full sm:w-auto bg-white hover:bg-slate-100 text-slate-700 font-bold px-8 py-4 rounded-xl text-base border border-slate-200 transition-all flex items-center justify-center">
+            Learn More About MaceInk Technologies
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ABOUT TELOS -->
+    <section id="about" class="py-20 bg-white border-y border-slate-100">
+      <div class="max-w-7xl mx-auto px-6 space-y-16">
+        <div class="max-w-3xl mx-auto text-center space-y-4">
+          <h2 class="text-xs font-bold text-brand-600 uppercase tracking-widest">Complete Platform Overview</h2>
+          <h3 class="text-3xl font-black text-brand-900 tracking-tight">Built to Streamline School Operations</h3>
+          <p class="text-slate-600 text-base leading-relaxed">
+            TELOS is a complete management solution built to bring together student records, staff management, attendance, assessments, report cards, timetables, and administrative operations into one simple platform. The goal of TELOS is to reduce paperwork, improve accuracy, and give schools better tools for decision making.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-slate-50 hover:bg-brand-50/50 p-6 rounded-2xl border border-slate-100 transition-all group space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all">
+              <i data-lucide="users" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-brand-900 text-base">Student Management</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Comprehensive directory tracking student profiles, guardians, medical data, and classes.</p>
+          </div>
+
+          <div class="bg-slate-50 hover:bg-brand-50/50 p-6 rounded-2xl border border-slate-100 transition-all group space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all">
+              <i data-lucide="user-check" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-brand-900 text-base">Staff Management</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Maintain staff records, designations, credentials, qualifications, and emergency contacts.</p>
+          </div>
+
+          <div class="bg-slate-50 hover:bg-brand-50/50 p-6 rounded-2xl border border-slate-100 transition-all group space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all">
+              <i data-lucide="calendar-check" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-brand-900 text-base">Attendance Tracking</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Monitor attendance, term days opened, present/absent logs, and generate summaries.</p>
+          </div>
+
+          <div class="bg-slate-50 hover:bg-brand-50/50 p-6 rounded-2xl border border-slate-100 transition-all group space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all">
+              <i data-lucide="pen-tool" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-brand-900 text-base">Assessment Management</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Input test scores, projects, and examinations with automated grade scaling and computations.</p>
+          </div>
+
+          <div class="bg-slate-50 hover:bg-brand-50/50 p-6 rounded-2xl border border-slate-100 transition-all group space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all">
+              <i data-lucide="file-text" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-brand-900 text-base">Report Cards</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Generate standardized terminal performance report cards with one-click PDF export.</p>
+          </div>
+
+          <div class="bg-slate-50 hover:bg-brand-50/50 p-6 rounded-2xl border border-slate-100 transition-all group space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all">
+              <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-brand-900 text-base">Timetable Management</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Organize class schedules, exam timetables, and weekly teacher duty rosters cleanly.</p>
+          </div>
+
+          <div class="bg-slate-50 hover:bg-brand-50/50 p-6 rounded-2xl border border-slate-100 transition-all group space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all">
+              <i data-lucide="settings" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-brand-900 text-base">Administrative Control</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Robust multi-role permissions, user setups, academic year configurations, and student promotions.</p>
+          </div>
+
+          <div class="bg-slate-50 hover:bg-brand-50/50 p-6 rounded-2xl border border-slate-100 transition-all group space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-all">
+              <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-brand-900 text-base">Document Submissions</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Teachers submit weekly lesson notes, termly forecasts, and examination papers for secure administrative review.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: THE STORY BEHIND TELOS -->
+    <section id="story" class="py-20 bg-slate-50">
+      <div class="max-w-5xl mx-auto px-6 space-y-12">
+        <div class="text-center space-y-4 max-w-2xl mx-auto">
+          <h2 class="text-xs font-bold text-brand-600 uppercase tracking-widest">Our Story</h2>
+          <h3 class="text-3xl font-black text-brand-900 tracking-tight">Built From Real Classroom Experience</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            TELOS was not created only from software ideas. It was inspired by years of experience within the Ghanaian education environment. The developers behind TELOS have spent several years working within education, understanding the daily challenges faced by teachers, administrators, and school owners.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md">Challenge 01</span>
+            <h4 class="font-bold text-brand-900 text-sm">Large Student Records</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Managing bulky physical files and large volumes of student bio data without data loss.</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md">Challenge 02</span>
+            <h4 class="font-bold text-brand-900 text-sm">Tracking Academic Performance</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Eliminating manual score compilation errors and standardizing continuous assessment computations.</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md">Challenge 03</span>
+            <h4 class="font-bold text-brand-900 text-sm">Preparing Reports</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Saving teachers hours of stressful terminal report card handwriting and formatting.</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md">Challenge 04</span>
+            <h4 class="font-bold text-brand-900 text-sm">Organizing Attendance</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Keeping track of school days opened, student presence, and absenteeism accurately.</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md">Challenge 05</span>
+            <h4 class="font-bold text-brand-900 text-sm">Handling Administrative Tasks</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Reducing bureaucratic bottlenecks across fee collection, staff duty rosters, and timetables.</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md">Challenge 06</span>
+            <h4 class="font-bold text-brand-900 text-sm">Manual Paperwork Dependency</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Transitioning schools securely to a digital ecosystem that handles lesson notes and submissions.</p>
+          </div>
+        </div>
+
+        <div class="bg-brand-900 text-white p-8 rounded-2xl text-center space-y-3 shadow-xl">
+          <p class="text-xs font-bold text-brand-300 uppercase tracking-widest">The Core Bridge</p>
+          <p class="text-base sm:text-lg font-semibold max-w-2xl mx-auto leading-relaxed">
+            "TELOS was created to bridge the gap between education experience and modern technology, ensuring schools run smoothly without technical friction."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: ABOUT MACEINK TECHNOLOGIES -->
+    <section id="maceink" class="py-20 bg-white border-y border-slate-100">
+      <div class="max-w-5xl mx-auto px-6 space-y-12">
+        <div class="max-w-3xl mx-auto text-center space-y-4">
+          <h2 class="text-xs font-bold text-brand-600 uppercase tracking-widest">The Company Behind The Software</h2>
+          <h3 class="text-3xl font-black text-brand-900 tracking-tight">Developed by MaceInk Technologies</h3>
+          <p class="text-slate-600 text-base leading-relaxed">
+            MaceInk Technologies is a tech enterprise focused on creating practical digital solutions that solve real-world problems. The company builds and maintain systems that combine technology, simplicity, and user-focused design.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="bg-slate-50 p-8 rounded-2xl border border-slate-100 space-y-4">
+            <h4 class="text-lg font-bold text-brand-900">Our Vision</h4>
+            <blockquote class="text-slate-600 text-sm italic leading-relaxed border-l-4 border-brand-600 pl-4">
+              "To create innovative digital tools that empower organizations, businesses, and communities."
+            </blockquote>
+          </div>
+          <div class="bg-slate-50 p-8 rounded-2xl border border-slate-100 space-y-4">
+            <h4 class="text-lg font-bold text-brand-900">Our Mission</h4>
+            <blockquote class="text-slate-600 text-sm italic leading-relaxed border-l-4 border-brand-600 pl-4">
+              "To develop reliable, accessible, and intelligent software solutions that improve productivity and efficiency."
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: OTHER PRODUCTS BY MACEINK TECHNOLOGIES -->
+    <section id="products" class="py-20 bg-slate-50">
+      <div class="max-w-7xl mx-auto px-6 space-y-12">
+        <div class="max-w-3xl mx-auto text-center space-y-4">
+          <h2 class="text-xs font-bold text-brand-600 uppercase tracking-widest">Ecosystem</h2>
+          <h3 class="text-3xl font-black text-brand-900 tracking-tight">Other Products by MaceInk Technologies</h3>
+          <p class="text-slate-600 text-sm">Discover our suite of robust enterprise and institutional tools designed for efficiency.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-6">
+            <div class="space-y-3">
+              <div class="w-10 h-10 rounded-xl overflow-hidden"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAA2yklEQVR42uV9a6ymV3Xeevb7nbnbxjYGcY0BmxhsLgWKpXIxIYiUFCgFZgQEUIgITatEpQ2tUFtxPERqSUSVKLTi0qSqIKLJDBhUCKghEDvEAkq4GAzGBmyo44KxwdeZ8cz53v30x7sva6293/ecMU5VqYMAz/F3vu/99mVdnvWsZ0FO8w9JPO95lw9XXXV4LSIyBJFb7rrnoe9+16cvvfl/3fOsO+9aP+nEiRMXrtfykHFLDkQyABAAIhChQEiKQEQo0/8Q+d3Tj6e/M4oIKEIRBAhFBBCR+nLh9D/TX0HBiOn/078XYHqPKAJAYv4MTv8q/apARIAw/R3pI0iZ/iOC8jlBBBQgfY/8rOn9pl9HfdP6qPVzBMLyWFEiKUAQEUoQkRCChPw5wkgZ710N8Uf79uz59v4Dw9cf8fADV//qG57+hQsvfNytMU7ve9llm6srr7x8BMDT2U+czosPHjwyHD16aEwHYd/7/vAvXvSVr/3o0C23HH/OXXetH3ZqC7JeB4kRIrIW6i8sIlH0s00rRlJQl0xIkQAREiISp3+DacFImvfUSwuKRGz/ZZvlSYcA+Y3LeVIvBPI5nF4C1kOqFjG4XyvfNL8eIkg7DyJ9HCWiPhchIgwylIeJQokiAgkhyGpDZPeGyP59+ME5D9747MUXPfjIW//lL34SwHG/Rw/YASAJ4HKIHI4k97/jdz7xa1/75k/e9KPb+fhj94qs12sRGUmRGOqdQ75hTF9suvj5PtGvsSAiGQOWhZL0RswHJm1WUO8p2qIgHbj0M6afQ9ztLMenWgSzIlR/dT8rG6VvdrYA+Wuh/nx6PabvmL47RGTMz5Y+PF+U/JST1aEUO4fA9ElBJGBYDbJnzyhnnbW+4aKLzn7fOw6/4j0AjolsBvJy7sQabHsANjcZDh9GXK1E/tN7Pnvw01d+++23/IAXHTs2CoKMwwAJEoJQwLKKNB9AybdT3S3tBUQkcObpqB+yWoKyoYA5WHknieZt1GFDvc3cucVEOg358ynzn9H8HNZmIa+JOgD938zuYXpuEMKQVpCM4xglRhn27RvkYQ/Ft5793Ee97S2/8cKj67Hu3f0+AEeOHBkOHTo0kjznX7z1Q7/31a/e+bo77ogCcFytABEETt4qW4p6r5K5A0Rie9+MKS63xPtNZRonM1ztMFXUENR7w99qyNK2NJcb7lZLtj7irMvCYhJQJsUeIOb7TdoDxHzA2XlPpNgnCBlVnDQ5VqHE9UhKDMODzob8nac+6AP/4bdf+WYAP8l7eNoH4LLNzdVVhw+vv/CVa5/6nndf88Fv3XDyCfcdv29cbQwQcnJ3TMGd/kKwNy0fDLvk0wGwG2zjwZgWK6iNUA66u1H2GIiYJYY/YcnN+HurTTt36CRZXUXxRuhbhfzvqA4+2PczVFbHvhvVgaXUYxXieozcu2/38MQn7Lnun/3TS19zySWP+erm5ubq8OEpaN/RAciBxEc+cvXP/7cPf+fojd/bOjsI1wBXjFMox4iy6HCL1XOncI4h3yvQm2sVqauFCu7m1zgyxwUs/57p/btmuWwSSqQvLmqnnFYg3d9ovR4u4xD1vQGIRNbLYDIcvUNzTsZmH9PnYE2G1eMu2Ljj9b/0xIO/+MKnf3ouOMTc5n/ww1c9/+iRGz92881x3zCMI0UGppiEHEWIYnz1+nEni+M20W8spAZv+Wzn8Ci634e5NK0JbZ+j5hGiYgkfM4g7mHNbXw+/TkftJtsjv/Bu2irqNZlxKSXoBUUYRDAIwOnv4LjewnD+z6yOv+bVF77kFf/wWZ/pHYJgA77NcPToofHP//xLT/7gB6//8E3fO7UvDONIyiAMAuYYfxDI0Byf3oKxs1G0e9ZP0XQUnpZucgmYj9BQzb8/ZDo8pX4W6E1Sr8HyRkEZY8Keq2bzYTcf2oLRXnJt+drFai8RBIIY0g+iSKTECIkRw2qQ8cabTu77r++/9sOf+MSXnnz06KFxc3PT7PnKpnoQkg869Et/cPSWv4kPCiuOjBimRU2GmZRAlcahs9vmR+rso39zCbUAGWDJuXeK5sw/K9NKeDPAki3ojEDfagpLrhrYpnTLBleZ9RLs0mwY3AHyQSNdeknvI2EtIRRmYpYaUmIv6niGFBISJQ6rIY43/w0e9Ifv//JRkpcCl9+d9poiIkN+w29+8+Lh+us/FG++9TH/+fob1j9Hch0gK+1fRplMzQTOKOira97tTUTratXmbR9kiT4k6rb13gLGZNIgb8Wm5EOB08LCzHOIjs+grDV2+DbZ5AeoC6DxB+X8emudLL9xSDq6FAqAEETWd9+D8/7nF7/xyGu+8uYrrr324uGb3zzK4gKyb3jn73/yZd/97tZr11txPQSuoL5dLOGVJISuf+WZ81XJCB8a98C5nBl5Rx1s4wJkohdXoOsvY46TE1JI2EPQuhG/CzM+zT6myjzy+/gXuY3TbsnfbOOmqMxEx+X6H4eUhuaIhyIYZLVec/3dm7Ze+9u/+6cvO3r00Hjw4JFBRGQ1mQOJJPe//NV/8M577g1cbYQgcaymNh3VIGEHoYzFA2aDJ7BGxxSTLtYAiPZA+1TSWM36mZEsG00V+iXbJRHshKPOBqMN3fx6U1xNogcukfMRKZYDzoo/oPteyAgjK/aiX5OtB6PIxkrCPfcOvPqvfvhOkp8C5DhJDFdeKavvf//n4r2nnvjr37kxvnprax0DMGj7Fik14nenuhR6ys3H9ma8/N6MaVSoWTkQ8ClRTntQF7KH8ecMOYWPFWqd3EIoeAU7ULD7Npj5IGM9ZH4NZlIhBGt8tGtC49La96lFLBbXTLUvObgKInFr3HXuN75x/e2fu/qSz115paym4Jvc+5JXvPfaH922cf5kDBjyqY6csDZzPzQkCuwYTl1OhZB91g7eDx30peaNOYiMQgmUAqWKDkap4omZ3SEoS2h6A27paJ87xwz84c8FssYSsMUFKvbZ+yB1BQBBQCQHPOS8re99/Io3XgLgxCAicvfWE156043rf7y1NRJgmEqeCtZEaP2xjljuT/zkbhMAf6xtrttdrAqXQSq4o9O4DI70kLgSSMIGleUmcx6vgLF+dfPBed/fjVlUQAoVQ9EdKDRvacNtmC+jQHKYAwGSjONwzpeuufYrX/z8R74ZQhC56Tt3verEiZAzpPJ9Y1rlwMm0NLkpbRmNLjDu2KoO3tpLlVjfFzMXSkNrFaFKm4/+opkAg52ylVRUcQHvh/L1TGlpKtqpNeIy4KpOF5zRyGvRCw5Ngp0OIA1SwvLFqWA0FJcWefIkeeONd70qBJFw5ZVfPu+OO049h+MaIgwlOk3XBD6loyuuK1QjYCnKp9jQjiribo8MZpYOxrcp7EBXFgUyFMfVnpuQOQbZRWjDDFgErgGs2vyHnLvwqqxrviXq+Z6Jp2bjKPVOnHNfrLFYrjRyKh6KSAxjHHHv3fE5H//4X543nP3gy15w881bb1yvyRJ7pTSuQW+WqRYLr5xJ+GHh2HquYOvp2xE9TBDaj+/7G5ODW25f013A4OdfhKbWcTo0nD7GsbwOKOZ/LhCfCupAOHDbbT/+q3Drj089i9gtgKobM2YOSgEjek9eq1mcDe+qj+xZQW2GqWBYVl+IuaVVAbsymSzuCH3ziZpCwu94p0SNLvYDQZOVsbkCkJn4pYc998rK3RNXfb2xHsolNUSV8v/TbQqQKNgtd9w9Pivcc/f6KeMICSEgB3t0xXiaSKw9zkQf82/92XZWwvljn/emA6GZPo3LKASLGR9OnQjOHGhXjKL30Z3ilSkC6Q1RsZHOhNCDHbohoqhbnelhtLjJwkqa75EODRBABjl5Ek8JW6dOXcA4Js4BFK6sg7wKRMARKUDawCh9aOzaOlcTIFQshFIcEe8zM6E0ByilMmS5hE1xh2zspq6oe5tFcTg+umhvcVvNTSU1CtsGveIqYupmU93WwphKNRdKdE/LCv6YrFb7/k4MXmDlgBgp63W8IJw8yfNiHA0vwQc6cHQusIXEmDYwLyzMaVaJCmBLyTWkSTfbRb6sJx2qfJmDGvYD64SMoXtIm8oenf1h3xxzpu7ViYcdWWM+moeIeNIWpE+tM+DXHFuFFuOAKXZN/C1yuhvrrXDeamsrHig3nXNR7ryTqp5CkxrgOLOaC0hDmw4heNhuJgCmOvG2WghOEX++MT7gmIxYLHZl6BXdC7aUOLhwqa1Zc5ZAVW98TecceMHWRUTtX6jxgEp/Z2dRmKlxvfgFah8yN6IBONMKMsp9J8cDq3GcsiLWJ+vSmaA5l4DlyqPF+2qwwjZdSWaEIcg9x+6TGE+qA0WFj0P55FjDLJPHVywchjpSd4SZSEnPOwjlyjTEE49FSwV6anl5elGgtjqswbZookgojmeigQcZwoYcOLBXBGOzQd5WwBe8yU55nSXIZPmy0gSF+WCM6zGsFjlxnqlSXDUrD49t6EwGDUjZ4Ce9DghyauuEHHrl+XLp3z3fWYrKMQQxNQoIDZNYWxjKDKeb28Cu6gqXRRNNBpV5fhtQLIav0JlcX9XsUVzkhEV88a+/Lx/97zfJxsbulKM34K/6O0SWQj6zb/NfXNFyhRRZ6Vp0qWoBltjgfEm1nrQM3XzogiNJODwbAXL8+Cm55JL9svmv/4H8//rnRb/wRPnuTX8kX/7KPbJv74bEyIZMorMCaiYIPLhmDWxwMRxNsM3y85Xn8xVcOhdlemRMMHnKwd1IlA+bu3n5Qq/HUc49b6+QIuv1KCHolhF0L52JI4DmVM9lHb24BnNF/h41ZwaSI2EtHaShflFtngkoY5TVaiUPOW+fjOs7JYRdUxm7s2lYAITnAstyLIwLtmxpishqIhG6L+78OpsYNZ+giXoE1cDA2fzbUq8AyBinzx6GICGgXzfucg3gDsDp9bjRHaBta9ezS4779fvlokFkXNP2HpQgbel4LhPWSh8mnYMsh6r+NNTYoZbDCKqS5Ew1JlMGUo4q2mL00h9PsoE0t3hH8GgHL0dL+dwRdLx8h04XpN3575v6CrTP5sKGwjbObvdJZFuT6hzQoDNr5KZFWpjDAoDVJ9AUJnyYwvkCj2omaVNY3A9vih1uzE4M6E5/hz/l+6ZsgzEhvCiNsBUzkbK21nBXLkRvvVgYUfWYzNUtgvHXBpmjfYOZqpMlZVGVJZvssDZupANGGCSpc74f6I27P7f5/v4Otnl6qPpF3shQMgtTaZcOCZJ5+3utZKmruIAUTNVyfUknNxgsbu1hsMo3aUwOpBN42ZNGid1KOlKuH2Kbo+aHfSBv7/J9faAO0k9/BGlK5O3T+wpB01+RiSyamkb3782VjhKaDg1VS6bH/d2DTcFcsF9hIfw3sUYPdICtrS9Tw3B6DoL3b6O3Ozw+CdOvb/oBTGGMqrDkcnmqWAcqDdRkY38lKapHoP4dDvKmTHxBpkA6tA2HltdG5//pqlekL1X6AKUiWzBWg01hhDo+6AZrP8UhmH2vbTKObQ6ht4KYuzAq8zDfkT760V0vtuijO4pLX6FiBgEKUpegYgQU4CeznfKjrUzeuhiJKgyg082qiYyVpBQ8fOZCQ9Mea5nH/w/8AfBAvplDTKZ/jlFVXKmAoKR+kbF/Yj7TbCzlHJEHtjpDQoIwlByNCxtfLoOmG3XvUezCsrqvXhMXZKno9Lf45//GJ7Xfp9dHR1Po0lk+YVPo03l/7CTqgezgyqmSOhwnxDdtWCa+J03Hkmrm+qdhGu2gT2zJH5M8rW3FwoIaMuYDdig9VhG6OMZU5qZ7/XZWqq8tUHob2HFY6QWrQt1QoD9KB5DHnarA0dQuFg3nHtLGAdrlF+UtZgBJeYCgkSq6bEIfrGhzSlOEUk+6LV+vv5g9FpJ5EmqlDxXp0PYpFO5Dvt0FNkZrAXRZ2LeTq8oyO8+qhbM84loOl+IDlN9L7xFqDZmGbM9FBLpWtEwS0biSVGB1nVJw2UahE/tTzCrmUAMiGEBER+Eu5pJtY7iFm7/oyjMQlgEaxRnTqmiUmJ5h/gDGyMKCL4kydeUUHUEbezhh6C4wbYl0VjzT2DMCuaKxCaY9wdSoYQtJEz+NU05fsgHQnF5/aqPYfo/VxiAUkXEcBQhTbSF38+r+wlKdHG22wORagCQqWK0IABkGLB6AXBNooGX39xij5QUypmdFiah7C10IFqp9DGrjQxhkYxXSzawpHHRHEjSWX2RFGjex1MTSu8i5ErCy0AArIpXrAmlhKTrBRAeVsgSOOVJDNtUbGyu57fYTAhHZ2Fj9LQZh2GEANR/5T6ylB/bPMEwL94NbT8iu3SuJWnRS8qGy3GUq7UC/ayb1hiu+pdowotHkFCFlpYsSLNp8k4GPkTW3VL4kv1bXMaCsSI8ron1SJGTv3l1y3XX3ym++9Qp55tMfLVvrsdw0ZoHIphgCx7SaTn5ktVIBIltbozz8EWfIC1/wlFmpMCNghT7uQE4xzqc+c63ccsvdk8XSFC5NdgELEori0qNyizQl82EI8oUv3izX33BM9u7dJYy+E0pvPE0cRa8wUWI3GDFL74L15me0ZwX0mxmzWTIbTFTT0rRYW3BnCRHMgcjGxm75s0/9SP70k7eIcKzWpghEpmAUU3fv9LMokXnBmShsnOIRiAREufvu++Q5z364/MILnlJuVvV/lnK+k1z//R/4ivzFX94iZ565V2KcfH5UUVIJpTL8inqACjpXudlTdxIGGXZtyP69u4Wjo9/rxpgCAqnoKwNATLwMKOidVSrXVApM5MoUg4mscoBSesupUwWt3Wa5atosoUOxngugaKDLKPv37xKRDalSDsqVZE0il1voBc0NlCVvCSIbq/vkrDPP7KImc35/KVncf8Z+OeecB8kZB3ZLTOK8Oeax4nRFpSuBN2ltWFnMmcsHGYSEjDEWgmuLkKOTQipb2tE5AKo2giUCVLtCVpLtymD1mjtD9RDQXDPF0VetybmHvXT0GFQxCiY6chOUjOOYFiRK1gZmKlGgKJGISYnYwRRjCsiGFWTsMJK2J4EsxxJxpMQxyhjH7jFhcbCqal94hRotzcFj2ni1LpbJI/PKYEKVGvoCUd4H1ANh0lUL5KwytFs8DhaaDs1DBJN+sdvpq0rFKk/OuXyhLaeYo5xcdWKp1ReVaofoL5ijnJAABQZTYAFOr27QrdbVaorrTU+3O+qN1yrmWsgHbe1NorowUmKwXLgpmUS+YGC+TsnudVLoIoduVLQMYxrFeRGmAERP6Jul1apTTl2U8GBHTV2MOYYroSA3PQSFEQRxYsGNOWQGp6CRrihgrTXvFA9Y8l1sCHqevl3FqdnItMB2DrbmqZTrUDIAVuRUav85RGRQJZ762bEE4qo5XtpaHQviCFBWXaB5ubW2ihChVrnIBW0g6EBMdf94PVY6TmHntlkkrMKddBgD2duonVkB/8pC584BJZH6FHTQFhsQq62SQm0qO2weOjPNBYkh1juduJksbidXBmMKVh0xFLXFLlClJmgQpv6SBamCjXZwAjqv9P17sSqIwYZ3hMPLMY+H249UC0e4J1EE6W6HStu2BV/XF6vbW/JrQn2PkKqfsA0tpIpvogoamdLdKNM2jRLJEr9knkB2JW11AAo8Crnp0wTMUxA6uPJ6dQtJQ4RuUIKYFmP2QJJczaM4NitdpRxqYSqXrWDYs5JbNqgo6nGyIEWaTZu7iQLb88OFslKjU+CYEvlwiUQZiyJ5coHM9ZRQhkHYLud8rEZDVo/pIEQ3qKJ0OJONWRcFqBmKCIsSpj20aGOz3KAT5vy87y7VhRKaw6Dy37likLQFHl3Jqvh6kKRPNR0axX4oCp+i9HlyH6KLg1gCSnuYDY2NkO24faRHOmUy9SqdzXEPGobMoJkbyrGEcnvrUcs4ggpe08UhhomBXTYWLj10FwVZrr5OOZG5ZEKQagG9uMR0CXOW3lQX3eek0WYKYgMpg1ARDa5NWHHKYOdB2N1JpjhKK6yuhZJMyyravHouToBqN48iMuq62QwCUrIe2JY37bWKCRdYghRTWllqdU56vAS/tezOFEiCrFC+iCSNP2nR+YQDtPU7S1WAFiKciQrtsAN9pMaWGAILotA1dOoaJJJVEKGMiCbvDZ2IGhrCNaczGOQUpxPx+gw4rUWQUIJDk880DR3s1FEtUAOglaxi6gLWE1FA15pIqyNMcSwsdawpjVBFWkflXbsxUv5g9+u0WQE7N6oGlaGRDiEhve57z0yGVk2gaqYwI1jssfGJDURmZOS3M/9cqKZ1AhgjW99zMK2uK0xrtjgfnQUvWEQZMjROWj2G5tOywIQTroSp3EMCdL+0e5bamNBPlMBqgjwyl/17EXKgVbay4g7O2eqotQiKhSLN0kiySVU2AyhzhVA2kCpPIxkUQ60G0YpElDjBkmrL/nVj2FZKvhGgNOwKOAkcq7ICHzkbl97K5a9KizNQWUFmhFl22rGVT4UDZFTbeCm2zCw0UFkQZiFdydIYshlNwto6ToMLdP0a3D2bKQoZdpBJKnKMEqdaRdkQMf+sBaIaqYDmsexGR1NDqM8czG7S24vW2ugLqtwMVO0noDO9iaL5fr6WKFq7pQY21FZk7mYlDhFtUgOnl2MLlDnxYg7ppkILqXr6pzybiVsGtvg4YIUqdTVwrkYAV2wpt15nAYaxq0bVdVaBHV4VhDKUcBkKwat4gibURECN0oFjX7DCJ+ykcp1YL+iyY2av6Fl31hy6+6xSQc6haC4EpUqBKOz3B6LWuPMrB+pQMdSya1aFQq1q+qldYKuopTUF2+zGT26gqelTHVLVT6PUw+rmcSG1FrdOKCBb/e8gQVaKMA9FOxNnWbSFgQLXqIp5RWmtwmT5xIUSybPJacV5IV2yzXrCMhMD6JSLtWJVNhF93X6B6n9TXAINfzbYAsqkTcpy5/Fcp71l2arL4QwlsX0gKW7TBP0GEoubqtKNVkxD7uTpaIUojwBHJUdD+bMXIXDm7s7NAmGpZxvBYCP/TpO7Voi0QsPoaDQ5GQfDjk3aQbBfCImYoSHjVjOD5iAUfd8upoEZmHj64ICagg5SuYBFo4hap1CdSdQSjO0WUofBFBvR0O9FtXY1T8rG9Tfe2oS2im8QTGo1e0PQ+A5Vh1EZowtMoCHU0Fy76JwDdaCV+ghqVay1RTUVhOPTwZWDa9qwExJoi0hkTIWmlDr9biwhfnEDC3OUekqeDhYo9K627Qxd1RRs00DSWApqDNKcopZ3J+IytLksmk5NlKrXQNUBQMMr6UfsTTWvTbUbWwVfi1CpGGeaJ5piBBfSQM78kzPIbuzNkjYqvbi264WgCkS7h5Re2sdK6zZC1FpkOv1uoNReP6oij9dZh8crIFZZ2+DbYmrTUFCxvyHeIvpApueMWIoomh5Whugl3lyPLnU6xBBvR2eCRqGZQ6QBNF223e4QGK0mWuGt9rDq39UHjQZVpZmwRsUEqK7JpYGYvR26K9VQxPziEsoXu0iElUWoNe01skfANZDXgZE0ByAdgjwrMMUgQSuSdmKKNuBbmnJQI6u5EcTQCir5dUBr2RZsQTNTERZYYgfM6AlK04F6hUEFP5+ukqyCAVl21EajAhJHA2t72rTohDqNxft3cHHXpl5iXuaA0iJnIYMdrKPkwVbhfGci1XNxEPuj26jLsHQBMN0hpIGK0dtE1FhKofALQLRWENUNOhVBtXhH+z5h5zMBXNCE7Xv4YY9mBWShRd2jySTmInGoY1vmlYPGKumWpx4KvzORtfYbgPN3F1D+1V0iT8AknIeHE4JgHTChIfrcXzSmqxONjfU6yI4NrHoIG3cIV1TDTjZelHACnauAzkndiJkG6VNQp3Taxk0plabKjJRVgEEkp4LpkcZSHtlZd+1ObEPB0enEGPKIuvmicOMi0am1aR+eWU2crR3QWEb6Cq9xeXPpbq2nrBrVAGknXVftOtdYAXGD/2yXTBvoZJJn7eUTerWQqi9saNK0vMKQYw0gjbK1BY9uFgPsaONLTZ7aKk2bnvsCsn+OhKJ81nmI/aKw8uZ60JBAWYQGErV0NM0F7s5V8vWL2Q6d3EnFWpvHXN2k5vRR5gcjgv2b0IiBuZBuTvMuzvFYspahGPy1FGqgpY9EU4FOQz/AXJ3YpqkqbbFDI6WJPZoJ52ndrEUVN4iLpugWEhw8EBM5RiN/7KTNDnhriLWYGcZN2BbntgTMxeopGo9gG07QFYPQVDPOUDVg3YSvDDa1cQ9dYccahA0yCAVVsVOC1iBU0VnsDNnSJJueFoHR0lPFnajp+m4cDn3eH1SFTTkMN4uwKJ1DRVFWYMQtF9sudZ9xkHMzguvNBS03Tm/usjhrZyKDFnmHrjeyMYE72n7SzhvoZoUobBz60JJQqdhMFKJIsV7QhaWqaYYSN1YVYB9Qogbh6oXrrW5pDCn0LMU40c1Xzel0WbphtIQlIBUzziG4SkCP/+sUQbQfYyx1gTw4InQSpe10AoxZd1YGLrAi+wIa5YArK+DOjkHTzIhro2gBFSxD0fLUoe/VFPIokOZQ10FcHssLtb2APpnoEBcczRTKLOWO3iIf4+sHbHKxbC5JXw+TmcMndvwMazwBQjprksrP26SreuxcifDR83AFb4uzI6VzCZYuAO5ZJY2T1Xy9sPrSxsO7Zs7EWXCVQYMWwtRQyopbNKwuWo+yD4qddpVvPRRR2ViSzsRt9AoMKHi9BXCCCxOtKGUekuwLFVCKGTUw4zb+vg0Ca5CWSShiniQfiiGGHZiZ+eyj6PehQvG5qshGhJKdOKVaSNKEEa58BwU0IfUYNjVJW7vXR0rPlkURNmLbQDIDs+hGHyjECiqtqT44v8sgfvYJ7ISCAgNDV9KCsiSYl4ox/Q4zL4oUM407sxmC8vs5teuRQf3RtlZOF4+giKA2JUc3iwnSi/05VwvWnEvk7gu0v1ViIPjulCBYaKZYrBa6L2XQMcVa8ZxOwCHfiKLLGlpEhQoKxbZ5cN8FLISgJnBDWY1KiIXMVSw92AaXI9lMpyV1xCSe4ctkUU1EoyGC1mFWirOhz0CyMMEwSRQZr0jGGHl4VnxC897cLB/20kiXPhHeqEl7+hUuDic6laHNCGnkKdhjM6Bver07mNMbBHxsQaVrjMaz95T+aq9ftN+9IKOxRexEHNjbU2CiSoVFVV0pc5R7FHKLudA2jTFfF9J21wHixSi01FELgrjGCXQr++oc5mM0uhKviORxc51hD3Qgkt9Ukl0SDEybWdsHgY6Ji0LjGjVxo/9krYZhAbWABU4WTEWVnZgqV0YBTyQPRaEdZhZvmBhBJRJnDfSge9OLsWvZIR3qgJsXAtVaJQ3T1dwbwJl9m7oY5DPaYM/fVE+ksOPesVAiansGm81UKeKUuVf2EjGxkyOqSCNUNN/MEiULvdz6dS0Rb/NrdKqSemahrc+oGYlgI14R2IFvqdQp7C0NogcmdU0pl6ptM01ZvpGToupeIg2ZMX0pGuqSChJpxRsFToK92eztggT3nVFZCpmxm7t38qDXUt2somv9imSJ/VK5G93oY7GA2dDQpNfnYGsAeU1CVnrtxT/RGbZcx0fi2UFRyAoxdKkMC87WHWnIC94U+5nDCcVGP4jTtXvT2sDTmy0kroahWU0xJdn0c46b4kxf6KEbtUMNyF3oV/CdRBq5zG6sEdpsvncUBNbWWXZGgrCELaw+WBEuiUncAIbAsaRSbYTqOkEi1XycYA0maMEdXRFXkq1sMcDOrdhuaFRT9e80fU6HIOoJajpFzmFrWjPMDH30rgWKxiUzgA9mCjGQ/lQ1iJX41yyrlT+LWTCKYjtsYcCF0QSN2bxup7WrmUnQ48tUJTgYho0CMRx5jnBDPLVOkYhp1+qbuF5pmF0kkhSJ6M9x00ondSR2jspDhxdoFbxk5rAWxbWyxk40Tg/6ZB01l1VCsuRs7cfsUVnNhAYaYgJ0LAtzxixMZG7u9lW2KmKhAOaG2BucxEtoQKl6o0bzBbMVwOyUs53HKPWmdyc2lViAhMSIgtzRcSPni94tZczHZHmD0WEXuEKA4TFMexJmnV0J72vTIMS3fXf0p8u5CZwYOZDtlTZ6X7fmVRlQ0eWg2C3nav9Ym7VCx7zDWAwsDqTDtvDtoEQgozLzpX9fcgt86ARvnAWe6jQvV/dQugFQdQ/TEM8K1AHVEsENlA6+UcV9wVWBzwLcvN8656dq/LO5I3DDm9GLAlBHRghrSZhOVhZdj+wm4WoGEaomORWpFCY7mFPjWlYO87MScw4NUwjSiQLrxPGMm2zDt6Rj6foAr+ULiGrGZ5mwlXWb2YGHqA+VUXOv5fMU5MTKKO0Um4PX4ik5P93DdTZfFTjEWRQs1A60WwI6tmiWe8jZyGmnE0o1P7EMbEoqJaGjCKI7gv0wCTGDofL7BmX7+lYJWiwNMyCz03nsHuUmBqgWNZgpU4YI0Yo+cwZKhaYxLeAAXUfBPpSqGSxMCWkRUMzaOuh1K6Pva6lHOXtRXs6wgdC+ba+4w5B0+mpVs7bAa3UPUeyo6Cp2M6lxV8Yx6QehX7Q3oYpXpnBIZ7DDiqI03YVYnFpvboAfKWd6/6H5KdB9CyrRzrpCrD34ZQCimjuoKDBGUr24Ki84ycWuIOquqG7W4ofiUqyqT+ykjI5komnxyi3Wuxvr0AuyY13EdvZIbGIHJN0iyz7SxAA06U0wuvTaj6rUhoYlEFVNIHb5Pz24Ba5gpD9wut3R1CD0gzetV1lYAbY+CeeWWle1wJA1ZBDvCalm8WVirM7kWVlJSft34iqkyD53CsE7ByhRbF93cUG+/k0MfatRlEwz2SZDPrFIyPvfCaRrJDB7Yz1aCVqSDr6pLXJbMK3bBDqDbSnwP9OcovTHS9eadiGHtE2MLTHFt3B3RtqRtvLHzjT0UhpWGgAGEIK+OFCsHiUGqRXXlVAHAZfH+FJ3D1Rysv70F8N+7wBh20/u/GJJy6Bmu6IOc8q9+72Kny1qRjFtneiwbMUHimxIJUVYornmlLHx66qnYA4rp68SouEtTJs3dDmLldJVtQ8matygCjkoAx4o47QOKajUM5qFHh7u1Gq68lTOSUFbfc/ErpXFVe1Fd4RqpRCmdRwxx3ByJA8kqLTxh07tfxJEdEMq0Bs5ZcMT2DBm0gQJEPQoSbCdsvN5+RIcgMpYkqoPTREZkXrsGBQ6CdeOZXkPhWIG2o7okC1yNPkGjVPXFwIW78ccCUVL91drHiLriZmDbfxAov7Uz1h4bYWtwyyS7PsEPYLt2UhBlYThv0mFOp3JiaRRAWlLjuimeRWUYT/LSaXd0olssp1p98YyI4hJ5TQqQMtJxRKdopF6Lh/VQweNMxUlhdiy0QU0uiMV42VvjIfPRadAwQAL/XZpzWMKMjdRO3P1NJGkbk0w8Qa7MqDtQGtgEjwMJa9tAz6A29z85TEyWqc4FO2jOk41ZLXuRFYAFYdJDcKAgqvmGUutLC9MK5Ai4mAJc7ScDYqbTQTWkY1z8qlNrkobatRFwASFwjAXmkUk2diVwobRWOY2qq1ZHx/lntH2JHYrf3p0yw7rwCWMYN0I2mCvkF1E5hVXVT2iKoGn9LaJuSpFL4/c9UMquQMoG5rhVdQqY1JfhXYBHQSuuYFRfGTkRhiVVinqrjP0ArsqkFynjri+OvZHvdF9fn5ZzKa/U7ixM4yoZLWX7062CFGxpDIgFZgPPEq8U8BxBCfloBnW+TsEVWyxbKCqt1SlYe0MBTYCGha0oalHVJxOJ8yTa14BjlMPPd+HRu7NphChtoejlh91M5Jrh7EHARXMqN2yFntnJ5ATqf3y+TYFSOlNCCJdYkqZdZgjbnZyfZkd0200VtUkn+T1UPl2Hm2H7wlhH6pFzTY0cUYrplj1tU7dBYpur67oUErE+rBPh3Rlxge5QAgun6SfkSMWZWrl2fpjXqYAMQjLg8EEkyZL8IFc7kDSVBX1KNFJHEFh9OWfVdpnFMVmjkCMUUXhWbJOFaxZI4OWgKqj8DbmoGmT1/K1XKCs0NNAar1CIaRacWSuBL3K5nYeKQtpoRTWb7SA0UzUYDlhYzd/LfeDEEcSaimanmhC1UsvUjoBs6kOqT9wNayEFFmvKSHQLhY1VYod7YB6QIZhkGEY7Nhc1IXWOTzN87KzXR5mVuwdVlMPNf5tzruzUUu3cxmouKD6u3trs6q9BG3p0cywKyqcKM0IveFMUQ1XsBZCxQnoqRla5ow1ef17gEZubPr7sFrJnXceE0BkY2OQn/bPseMnJQxDSnDSGLhMCU9rOiTIl50hm6IOuxdsgq5SshaJ5kALmDlCnZ7/at6M0pie/Kpfu5rQrcmPRopF/ulUx+HHmnbcWgGC2IGNspRcKEoiMEOqYULKspRGlUTf2gpoFBYQRfbuWcn1N9wtv/XvPymXPvN8GWOaWmSkuy1+YkqqKSBdDUG+8Nffk+tuuEv27N8lkXFi0osYyhy0NSmq6lrTQItmssjjVjYVTDsQMM+trMWnQVkQldnA9ULSTmeB6rYgKXjuz7+bx06Eqc+iGeM2wV3kXLHf2osSAJLdE5wl4pnn6TT0k2ii4TLP3LiBThziFcEwBan3HDsmMZ6spWUk/lFKVwvPmdNAaykzDJI5DUEQdsn+/Xtqbk9H/lRt3O3N13rK0pmorSd+oCKE3eK7999LBFd0CnUosft0wIMM4ZisprllDL3Ct2EJknNVZ8PUKeLdYmnjFXkLnZaPuvklPsBcsyabSSE0kcB02qOs5cCB3QLunkCa8v2CCpxsIMmiusVCjqEgWUaYGMaeQZvqoVDVqLIEdtYwiXQrCRo2FLioJoazS9SjumCWAEqV8cBg6QAlDCGugPW9go0z5ylRwSn39SLaLANr5JLE6uMp0yPsnuhpxIkt5ujDJ2o+se1CrDlHUKTMGLckCKbbXfLwqExzjtJDuTGUUaK2amlyOXTHTqkMxpmanB0GTReo2eyYFRNw6qKTxwqJ8lV5AFB1UCmjsujG03kGi8IPUja2awP3Bsj6tlqfgX9qA54Y6ZIOmpZzbE1EpDntttWxH9jNECkbciMVWVJp5qWp5NNzrNQc4VCWLzLV49jS07IWeNHvL3N/o2E1N8xc+iidbuMdm9k1RYBU008UkZVe/yA0dJQ8tbQnBkNhZy+ECIOsNnhb2LUxfGcYVqLnT8BMx9QHqBZDATu2BQypxm0l2+bgZZMpNJW+9rVEj8CNOiqVuQKpZOWzVH0aSRunpL5kF0Fx+fR8FgjKEEhRTKOiA62CZa3YDfai4mgNNtrvACMMBTVBHaZ62sLbCTNpZ+yoYx1SI61oS8EAyK7d4Tthz97VNWFIdwwsDDzvSTL1mQoYqwhVqEMjjBHxQw5humzM6Jtm5gRmU6GyxmS67XrBbBOriRdYb2ZpyPSQt6+OljZr1DNCzZbKUvh+egpU80ur7AEPu5cZCHVdQM8Hozs4wdDBzDQWUrrzXkhhjBRZy56N4Zrw0PN2Xb0a1iIiAW7WL8Rx02jwxg4O0I5Tg4tY2aKfZkaQXiyQi1UhGtp27MbEujN58v+DkrG3aqA9lhWilb3PZWGWTUfTqg3pl9gxV2vS02+K2U+4gsFiFrhWanRtexNRh1NO3yJATskZZ+Dq8E/e9LTP7dvHW4EhiQC2JVj2aZRlVg8WRjFKdzFghQ59J6vJE5aFJ+37s1X1J/ojZ1wXIbr8BHvIpENrA73Yk/RJuG3U0ExHg4Ja8qlF4HbNwQ2PkNRq7EqOD5BJEgTY2Fjf+qpXPuFz4RnPeNptZ5218dlhtSLZCWs7/L1awvWkSXft1ILa1jq/mHSD4Ggrdz2SDyFOKLRbwLa8QLhiypyaR2/qY+97OFOUswMszVCeYU2b8JilOGZAooVTAE2s7ghv1AJkiENY8ayzNj774hc/97YQo8iFjzv3j3fvJmL0Ej3dpXFNo7VmXcOeFr4tJWnn3+1dlEqKLPpEsXnHHKxj1uKEFK8sdyzToGUu62l8bt8i9OZQkzpFbPsM6K0ANHdHUUA7jS6Ff4hoQbQ87Ksz5taVmrFnn+BnLzznj2PMh5Dc++KXv/faH94azg9CkjEgcIIbqVu1qfJOvQi0VKcFfhEXeSvLhg6isHZQVdQsngigQ7BEA47oH0MzZ+iKzmynokkHl7T1DlU+Rijzf1kCNjZATVFDLbhHmC0IVbA8zpAzFTCEkCjvMTKu8PCHj9/76JE3XgLgRLjsss0BwPHHPfbMd+3aJRjHSK/FJ9CCw8FF2DmFifPEitkt7REw0DHhDnQzU8J0aVaJLCkkryVKtEmGzeCcdDp0H4T+L10TKNUEVRoGki7ZiuILVrrWaL4knEttB9nVgB3i5xPRlr3T58UI7ts/4KILznkXgOOXXbY5gGSuRu57ycvfc80t/zs8dip8MUwHMKgIspo2+JFmaDto5rgWejSMFqUt9XmyYyvawU/TCdeKIq5MrWTnlw4hAEc8UYIP27W9Q7edVdi3FnnE0qqNaw2K80A1AJOGgtcGkujHOxgSMVW3ZOZmlSFGDnj0I+ONV/zJG58CyPGpJxjgwYNHA4Bjz3zGo99y4AzBuI5xuuhDIlxSDWWGuns0M+9NSIV6YAincQelgknf0x4d2aFPQM3uQN9cK6/my619fR6i/q75bW5X/GpjliwBN4UPQcQHZb5hBVrdPJjX+FL4XKBLBQubbmO1MRDIqS3G/fvWeMbTH/oWAMfSnlenffDgkeGKKw6Nb/jV93/g69849dqRcT2AK+q+PI6uI2Y65SXrYMUGGoGGDCRRDTJW3G4wdvW6qDfcVcVtd3IwdXBdhOqzvSrE2nRFUFfU+opihmeo+YCUqhPAuYG6ta+fRnQWraIIuUhYq3T1obmgRVIuYh3CsLr44uGPPvBf3vC6l7/8yHD06KHRptQkgMtBXn7m637lA1/41vVbjx+GOAriwIiCvDFH6GyHMnEu60VwHWQ1wJoCoijtLG3L5dNjTMriI2cJVgyZDRH0p/2jWYhz/96tAzgjCUZLfzJcSCzGUewwpaAPYCKqQgWTjOO4HjE87vzhhg/9yRsvBXA3p82mqIhOAHBz83IBcOe/+uc/d/Dxj99959aag0gYq5mLTUmyjoetLF8vhyp65ClEKVqEyhPIZU/pCqA4koVj8yqFb7rAqxtkouIAua6xM32TjmInQslGoIc0czkMBp26WXk0NJB514Y4eniRyFVEXgDjesTwyEfIna//5acdBHDn5uamQDVJNN/74JEjw9FDh8arrv7W89/93i997NvfPr5vGOIowoFRSpcpGTpnU5cnO3P7CjOTlvgI1+mzcMNKtF/Kz5TTkajhMrOlS+tomFeFoBKlEbJGRzclwdDsWIvoptnAZf1eaWjxe2b510ARkXG9xvCoR4bjr/hHF7zk9a+57DMHD1bTLwYdUH+OHjo0HjlyZLjsWRd95ld++akvveCCPXdsbXEYR1lTCx9AT78LiqIkfZ9JjcTl0nEo+EFvC9vxsB1unPQrdHOKJZjLAGa4RhooKlXQGaKKHnfvOseakY9Q6TWa0dlW6Qy92bJZLlVU5zSjhInYtCbD8Jif2bjjVYcufOnc5ncPgIjIoUOHxs3NzdULn3/xp3/j15/9/CddfOC61TCs1ltxFJFYm4E0RsAG8tG3lw55qxG81t32G2xlUqFigCZChprUwX7U3xvvxo6CI2Z4SCYtLHoBmLFSXgTDF8Ms4YUyQ371eazY2YKl/3BKZeLW1nrc2LVa/eyFu6570xue8fxXH3zupzc3N1e9zZft7OaRI0eGQ4cOjSTPefNvXvF711z7k9fddbfIMIxjCCHVYFGlXdmrgnhhh0lkSSd4ucGjdvWEPllEoV9WdS+4kp4rPsFO2tCiF2bD0Yk7ZkwJSp1T6xhmsiebpeCCHF35CVuWI01TqOo9zERaRiGGOG6tSYbhrDODXHTRgQ+85z++5s0AfpL3cCcJbffP5ibD4cOIq5XIO3//swc///mb3/7DH64vuvfetQDjOGnZMzDJPNobwQVPDJVMsA6OhrorOW0UOPklr7mDRokIjE4RZSbL8GmrytsrlmDnGMK8CcyMV3bl3LeLTdAVgvTvNJFZSxZBIeO4ppAy7Nk7yIPPlW898xkPe9vmv33x0XGse7ddXLTtn5wiihyOJPf/1r/7xK9d8/Ufv+n22+Pjj5+grNdbApIIEifYuTTfKROrx72yQuyZRQR3ABpkzwjVq6VKE0T1jB7a+IHgTGQnrS5Cg7j1dHm1EDVsEUmRs2xtoUO4NF1YwdSFTePpVGtJlTeSwiBYYddqJRurLTlj//qGJ1x07vt+5x2veA+AYyKbgbycALj94TuNPzqQILnv37ztoy+69rrbD915x6nnbG2Fh4lsSIxBRo7C6DWELGPNC6rNZr1qLq+tOrbTtMvCo0NkgIHlHF+AjbSLn37a5AjQfeqxClkZmJwL1rDNRzJLiYgKkcw9EIOEAbKxK8jujS3Zswc/OPvs3Z993GPPPPL2t73skwCO+z3aKcJxWn9I4nnPu3y46qrDmUYkf/aprz30Y//jW5fecceJZx0/Fp904r5TF57aGh+ydTIeWI8MVX/YsiB0rx4NmaEifboVTXcMGhja3E6Yze0fF5EuL41K+bzXEOsZt0YnD6qQBz9dS+YEWwutDKnjSKTg+enAx10b4d7VMP5o356Nb5997r6vP+ZRZ139ir9/4Ree+veefGvu7r7sss3VlVdePu7k1us//wdvHRlzQp7RFwAAAABJRU5ErkJggg==" alt="TELOS Logo" class="w-full h-full object-cover rounded-xl"></div>
+              <h4 class="text-base font-bold text-brand-900">TELOS</h4>
+              <span class="inline-block text-[10px] font-bold text-brand-600 uppercase bg-brand-50 px-2 py-0.5 rounded">School Assessment & Reporting System</span>
+              <p class="text-xs text-slate-500 leading-relaxed">A complete solution for schools to manage academic and administrative activities.</p>
+            </div>
+            <button onclick="installViewer()" class="inline-flex items-center text-xs font-bold text-brand-600 hover:text-brand-700 cursor-pointer text-left">
+              <span>Install Archive Viewer</span> <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+            </button>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-6">
+            <div class="space-y-3">
+              <h4 class="text-base font-bold text-brand-900">Pecunia</h4>
+              <span class="inline-block text-[10px] font-bold text-emerald-600 uppercase bg-emerald-50 px-2 py-0.5 rounded">Payroll Management System</span>
+              <p class="text-xs text-slate-500 leading-relaxed">A modern payroll platform designed to simplify employee salary management, deductions, reporting, and payment processing.</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-6">
+            <div class="space-y-3">
+              <h4 class="text-base font-bold text-brand-900">Transport Management</h4>
+              <span class="inline-block text-[10px] font-bold text-blue-600 uppercase bg-blue-50 px-2 py-0.5 rounded">Fleet & Operations Solution</span>
+              <p class="text-xs text-slate-500 leading-relaxed">A solution designed to help transport companies manage vehicles, drivers, fuel records, inspections, and operations.</p>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-br from-slate-900 to-brand-900 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between space-y-6">
+            <div class="space-y-3">
+              <h4 class="text-base font-bold text-white">Future Products</h4>
+              <span class="inline-block text-[10px] font-bold text-brand-300 uppercase bg-white/10 px-2 py-0.5 rounded">In Development</span>
+              <p class="text-xs text-slate-300 leading-relaxed">More innovative solutions coming soon to expand productivity across African institutions.</p>
+            </div>
+            <span class="text-xs font-semibold text-brand-300">Stay Tuned</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: WHY TELOS -->
+    <section id="why-telos" class="py-20 bg-white border-y border-slate-100">
+      <div class="max-w-5xl mx-auto px-6 space-y-12">
+        <div class="max-w-3xl mx-auto text-center space-y-4">
+          <h2 class="text-xs font-bold text-brand-600 uppercase tracking-widest">Trust & Reliability</h2>
+          <h3 class="text-3xl font-black text-brand-900 tracking-tight">Why Schools Choose TELOS</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="flex items-start space-x-3 bg-slate-50 p-5 rounded-xl border border-slate-100">
+            <div class="text-emerald-600 font-bold mt-0.5">✓</div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Designed for Ghanaian Schools</h4>
+              <p class="text-xs text-slate-500 mt-1">Structured precisely around local academic terms, continuous assessment schemes, and statutory compliance requirements.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 bg-slate-50 p-5 rounded-xl border border-slate-100">
+            <div class="text-emerald-600 font-bold mt-0.5">✓</div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Built Around Real Educational Challenges</h4>
+              <p class="text-xs text-slate-500 mt-1">Created by practitioners who understand everyday classroom friction and administrative bottlenecks.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 bg-slate-50 p-5 rounded-xl border border-slate-100">
+            <div class="text-emerald-600 font-bold mt-0.5">✓</div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Simple User Experience</h4>
+              <p class="text-xs text-slate-500 mt-1">Clean, intuitive SaaS interfaces that require minimal training for teachers, and administrators.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 bg-slate-50 p-5 rounded-xl border border-slate-100">
+            <div class="text-emerald-600 font-bold mt-0.5">✓</div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Secure Data Management</h4>
+              <p class="text-xs text-slate-500 mt-1">Encrypted cloud persistence with offline queue synchronization to protect student and staff records.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 bg-slate-50 p-5 rounded-xl border border-slate-100">
+            <div class="text-emerald-600 font-bold mt-0.5">✓</div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Scalable For Growing Schools</h4>
+              <p class="text-xs text-slate-500 mt-1">Easily handles multiple streams, expanding student populations, and multiple academic years.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 bg-slate-50 p-5 rounded-xl border border-slate-100">
+            <div class="text-emerald-600 font-bold mt-0.5">✓</div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Continuous Improvement</h4>
+              <p class="text-xs text-slate-500 mt-1">Regular updates, feature expansions, and dedicated support from MaceInk Technologies.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6.6: SUPPORT / QUICK START GUIDE -->
+    <section id="support" class="py-20 bg-white border-y border-slate-100">
+      <div class="max-w-5xl mx-auto px-6 space-y-12">
+        <div class="max-w-3xl mx-auto text-center space-y-4">
+          <h2 class="text-xs font-bold text-brand-600 uppercase tracking-widest">Support</h2>
+          <h3 class="text-3xl font-black text-brand-900 tracking-tight">Admin Quick Start Guide</h3>
+          <p class="text-slate-600 text-base leading-relaxed">
+            New to TELOS? Here's the fastest path to getting your school fully set up as an Administrator.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="flex items-start space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <div class="w-9 h-9 shrink-0 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">1</div>
+            <div>
+              <h4 class="font-bold text-brand-900 text-sm">Sign In As Administrator</h4>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Log in with your admin email and password. Only the Administrator account can access the school-wide Dashboard, Settings, and school-wide configuration.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <div class="w-9 h-9 shrink-0 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">2</div>
+            <div>
+              <h4 class="font-bold text-brand-900 text-sm">Complete Academic Setup</h4>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Under Settings &rarr; Academic Setup, set your School Type, Academic Year, Terms, and Grading System first — everything else builds on this.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <div class="w-9 h-9 shrink-0 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">3</div>
+            <div>
+              <h4 class="font-bold text-brand-900 text-sm">Create Classes & Streams</h4>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Set up each class and stream your school runs (e.g. JHS 1A, JHS 1B) under Classes & Streams Management.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <div class="w-9 h-9 shrink-0 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">4</div>
+            <div>
+              <h4 class="font-bold text-brand-900 text-sm">Add Staff & Assign Roles</h4>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Add teachers in Staff Directory, then assign each one as a Class Teacher and/or Subject Teacher under Subject Configuration & Assignment.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <div class="w-9 h-9 shrink-0 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">5</div>
+            <div>
+              <h4 class="font-bold text-brand-900 text-sm">Add Students</h4>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Add students one at a time, or download the CSV/Excel template in Student Directory to bulk-add your whole roll at once.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <div class="w-9 h-9 shrink-0 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">6</div>
+            <div>
+              <h4 class="font-bold text-brand-900 text-sm">Build Timetables</h4>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Set up each class's weekly timetable under the Timetable tab. Staff automatically see the timetables for their own class and subjects.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <div class="w-9 h-9 shrink-0 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">7</div>
+            <div>
+              <h4 class="font-bold text-brand-900 text-sm">Track Scores & Attendance</h4>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Once the term is running, teachers enter scores and attendance is logged. You can review progress anytime from the Dashboard.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <div class="w-9 h-9 shrink-0 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">8</div>
+            <div>
+              <h4 class="font-bold text-brand-900 text-sm">Generate Report Cards</h4>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">At the end of term, generate, preview and download report cards individually, in bulk, or from the archived history — all as ready-to-print PDFs.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-center text-xs text-slate-500">
+          Still need help? See the <a href="#contact" class="text-brand-600 font-semibold hover:underline">Contact</a> section below to reach MaceInk Technologies directly.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECTION 6.5: CONTACT -->
+    <section id="contact" class="py-20 bg-slate-50">
+      <div class="max-w-5xl mx-auto px-6 space-y-12">
+        <div class="max-w-3xl mx-auto text-center space-y-4">
+          <h2 class="text-xs font-bold text-brand-600 uppercase tracking-widest">Get In Touch</h2>
+          <h3 class="text-3xl font-black text-brand-900 tracking-tight">Contact MaceInk Technologies</h3>
+          <p class="text-slate-600 text-base leading-relaxed">
+            Have a question about TELOS, need support, or want to discuss a custom solution for your institution? Reach out to us using the details below.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-brand-50 flex items-center justify-center">
+              <i data-lucide="map-pin" class="w-5 h-5 text-brand-600"></i>
+            </div>
+            <h4 class="text-sm font-bold text-brand-900 uppercase tracking-wide">Our Location</h4>
+            <p class="text-sm text-slate-600 leading-relaxed">Tema Community 22, Ghana</p>
+          </div>
+
+          <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-brand-50 flex items-center justify-center">
+              <i data-lucide="phone" class="w-5 h-5 text-brand-600"></i>
+            </div>
+            <h4 class="text-sm font-bold text-brand-900 uppercase tracking-wide">Call Us</h4>
+            <a href="tel:+233545553048" class="text-sm text-slate-600 hover:text-brand-600 transition-colors leading-relaxed block">+233 (0) 54 555 3048</a>
+          </div>
+
+          <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm text-center space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-brand-50 flex items-center justify-center">
+              <i data-lucide="mail" class="w-5 h-5 text-brand-600"></i>
+            </div>
+            <h4 class="text-sm font-bold text-brand-900 uppercase tracking-wide">Email Us</h4>
+            <a href="mailto:info@maceinktech.com" class="text-sm text-slate-600 hover:text-brand-600 transition-colors leading-relaxed block">info@maceinktech.com</a>
+          </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto text-center">
+          <a href="mailto:info@maceinktech.com" class="inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-base shadow-lg shadow-brand-600/30 transition-all space-x-2">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Send Us An Email</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: FOOTER -->
+    <footer class="bg-brand-900 text-slate-400 py-12 border-t border-brand-800">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+        <div class="space-y-2">
+          <div class="flex items-center justify-center md:justify-start space-x-3">
+            <span class="text-white font-extrabold text-lg tracking-tight">MaceInk Technologies</span>
+          </div>
+          <p class="text-xs text-slate-400">Building Smarter Solutions.</p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-6 text-xs font-semibold text-slate-300">
+          <a href="#about" class="hover:text-white transition-colors">About</a>
+          <a href="#products" class="hover:text-white transition-colors">Products</a>
+          <a href="#support" class="hover:text-white transition-colors">Support</a>
+          <a href="#contact" class="hover:text-white transition-colors">Contact</a>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          &copy; 2026 MaceInk Technologies. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+  </div>
+<script>
+if(window.lucide)lucide.createIcons();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e});
+async function installViewer(){
+  if(dip){dip.prompt();await dip.userChoice;dip=null;return}
+  location.href='viewer.html'; // already installed, or browser without install: open the viewer
+}
+</script></body></html>
