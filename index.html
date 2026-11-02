@@ -63,6 +63,26 @@
       </div>
     </section>
 
+    <!-- SECTION: ILLUSTRATED TOUR -->
+    <section id="demo" class="py-16 bg-white border-y border-slate-100">
+      <div class="max-w-5xl mx-auto px-6 space-y-8">
+        <div class="text-center space-y-2">
+          <h2 class="text-xs font-bold text-brand-600 uppercase tracking-widest">Illustrated tour</h2>
+          <h3 class="text-3xl font-black text-brand-900 tracking-tight">See how TELOS works</h3>
+          <p class="text-slate-500 text-sm">A simplified view of the main screens, with sample names only.</p>
+        </div>
+        <div id="tour-tabs" class="flex flex-wrap justify-center gap-2"></div>
+        <div id="tour" class="rounded-2xl border border-slate-200 shadow-2xl shadow-brand-900/10 overflow-hidden bg-slate-50">
+          <div class="flex items-center gap-2 px-4 py-2.5 bg-slate-100 border-b border-slate-200">
+            <span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-amber-400"></span><span class="w-3 h-3 rounded-full bg-green-400"></span>
+            <div class="ml-3 flex-1 bg-white rounded-md text-xs text-slate-400 px-3 py-1 truncate">https://yourschool.edu.gh</div>
+          </div>
+          <div id="tour-screen" class="p-5 min-h-[360px]"></div>
+        </div>
+        <p id="tour-cap" class="text-center text-slate-600 font-medium"></p>
+      </div>
+    </section>
+
     <!-- SECTION 2: ABOUT TELOS -->
     <section id="about" class="py-20 bg-white border-y border-slate-100">
       <div class="max-w-7xl mx-auto px-6 space-y-16">
@@ -487,6 +507,43 @@
   </div>
 <script>
 if(window.lucide)lucide.createIcons();
+// ===== ILLUSTRATED TOUR: edit titles/captions here =====
+(function(){
+  const chip=(t,c)=>`<span class="px-2 py-0.5 rounded-full text-xs font-bold ${c}">${t}</span>`,
+  stat=(l,v,c)=>`<div class="bg-white rounded-xl border border-slate-100 p-4"><div class="text-xs text-slate-400 font-semibold">${l}</div><div class="text-2xl font-black ${c}">${v}</div></div>`,
+  bar=(l,p)=>`<div class="flex items-center gap-3 text-xs"><span class="w-16 text-slate-500">${l}</span><div class="flex-1 h-3 bg-slate-100 rounded"><div class="h-3 rounded bg-brand-600" style="width:${p}%"></div></div><span class="w-8 text-slate-500">${p}%</span></div>`,
+  row=(a)=>`<tr class="border-t border-slate-100">${a.map((x,i)=>`<td class="py-2 px-2 ${i?'':'font-semibold text-slate-700'}">${x}</td>`).join('')}</tr>`,
+  th=a=>`<tr class="text-xs text-slate-400 text-left">${a.map(x=>`<th class="py-2 px-2 font-semibold">${x}</th>`).join('')}</tr>`,
+  card=(t,b)=>`<div class="bg-white rounded-xl border border-slate-100 p-4 text-sm"><div class="font-bold text-slate-800">${t}</div><div class="text-slate-500 text-xs mt-1">${b}</div></div>`;
+  const S=[
+  ['Dashboard','A clear overview of the school: students, staff, attendance and class performance at a glance.',
+   `<div class="grid grid-cols-2 md:grid-cols-4 gap-3">${stat('Students','420','text-brand-700')}${stat('Staff','28','text-brand-700')}${stat('Attendance','96%','text-green-600')}${stat('Classes','14','text-brand-700')}</div>
+    <div class="bg-white rounded-xl border border-slate-100 p-4 mt-3 space-y-2"><div class="text-sm font-bold text-slate-700 mb-1">Average score by class</div>${bar('Class 3',78)}${bar('Class 4',71)}${bar('Class 5',84)}${bar('JHS 1',66)}${bar('JHS 2',73)}</div>`],
+  ['Assessment entry','Teachers enter class scores and exam scores. Totals and grades are worked out automatically.',
+   `<div class="bg-white rounded-xl border border-slate-100 p-3 overflow-auto"><table class="w-full text-sm">${th(['Student','Test 1','Test 2','Project','Exam','Total','Grade'])}
+    ${[['Student A',9,8,9,41],['Student B',7,8,6,35],['Student C',10,9,9,44],['Student D',6,7,8,30]].map(r=>{const t=r[1]+r[2]+r[3]+r[4];return row([r[0],r[1],r[2],r[3],r[4],`<b>${t}</b>`,chip(t>=80?'A':t>=65?'B':'C','bg-brand-100 text-brand-700')])}).join('')}</table></div>`],
+  ['Report cards','Professional one-page report cards with grades, positions, attendance and teacher remarks. Print or save as PDF.',
+   `<div class="max-w-md mx-auto bg-white border border-slate-300 p-4 text-xs space-y-2"><div class="text-center font-black text-brand-900 text-sm">SAMPLE SCHOOL</div><div class="bg-brand-700 text-white text-center font-bold py-1 tracking-widest">TERMINAL REPORT</div>
+    <table class="w-full border border-slate-300">${th(['Subject','Class','Exam','Total','Grade'])}${[['English','42','45','87','A'],['Mathematics','38','41','79','B'],['Science','40','44','84','A']].map(r=>row(r)).join('')}</table>
+    <div class="flex justify-between"><span>Position: <b>3rd of 40</b></span><span>Attendance: <b>55/60</b></span></div><div class="border border-slate-200 p-2 text-slate-500">Class Teacher's remark: A hardworking student.</div></div>`],
+  ['Student directory','Every learner in one searchable list, sorted A to Z, with bulk upload from Excel.',
+   `<div class="bg-white rounded-xl border border-slate-100 p-3"><div class="flex gap-2 mb-2"><div class="flex-1 bg-slate-100 rounded-lg px-3 py-1.5 text-xs text-slate-400">Search students…</div><div class="bg-brand-600 text-white rounded-lg px-3 py-1.5 text-xs font-bold">Add student</div></div>
+    <table class="w-full text-sm">${th(['Name','Class','Gender','Status'])}${[['Student A','Class 5','Female'],['Student B','Class 5','Male'],['Student C','JHS 1','Female'],['Student D','JHS 2','Male']].map(r=>row([...r,chip('Active','bg-green-100 text-green-700')])).join('')}</table></div>`],
+  ['Roles and access','Administrators, class teachers, subject teachers and parents each see only what they should.',
+   `<div class="grid sm:grid-cols-2 gap-3">${card('Administrator','Full control: setup, users, backups, all report cards.')}${card('Class Teacher','Leads a class: remarks, attendance, report cards, promotion.')}${card('Subject Teacher','Enters scores for the subjects and classes assigned.')}${card('Parent','Sees only their own child’s results and attendance.')}</div>`],
+  ['Backups and storage','Safe backups saved anywhere, a storage monitor, and old terms archived to keep the system fast.',
+   `<div class="bg-white rounded-xl border border-slate-100 p-4 space-y-2"><div class="text-sm font-bold text-slate-700">Storage monitor</div>${bar('Database',38)}${bar('Files',22)}
+    <div class="flex flex-wrap gap-2 pt-2"><span class="bg-brand-600 text-white text-xs font-bold rounded-lg px-3 py-1.5">Create full backup</span><span class="bg-slate-100 text-xs font-bold rounded-lg px-3 py-1.5">Verify backup</span><span class="bg-amber-100 text-amber-800 text-xs font-bold rounded-lg px-3 py-1.5">Restore</span></div>
+    <table class="w-full text-xs mt-2">${th(['Date','Size','Status'])}${row(['Term 1 backup','48 MB',chip('verified','bg-green-100 text-green-700')])}</table></div>`]
+  ];
+  let i=0,timer=null;const tabs=document.getElementById('tour-tabs'),scr=document.getElementById('tour-screen'),cap=document.getElementById('tour-cap'),box=document.getElementById('tour');
+  S.forEach((x,n)=>{const b=document.createElement('button');b.textContent=x[0];b.onclick=()=>{show(n);play()};tabs.appendChild(b)});
+  function show(n){i=n;scr.innerHTML=S[n][2];cap.textContent=S[n][1];[...tabs.children].forEach((b,k)=>b.className='px-4 py-2 rounded-full text-sm font-semibold border transition '+(k===n?'bg-brand-600 text-white border-brand-600':'bg-white text-slate-600 border-slate-200 hover:border-brand-500'))}
+  function play(){clearInterval(timer);timer=setInterval(()=>show((i+1)%S.length),5000)}
+  box.onmouseenter=()=>clearInterval(timer);box.onmouseleave=play;show(0);play();
+})();
+
+
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e});
 async function installViewer(){
